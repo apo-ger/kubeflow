@@ -205,10 +205,16 @@ func (r *NotebookReconciler) Reconcile(ctx context.Context, req ctrl.Request) (c
 			return ctrl.Result{}, err
 		}
 	}
+	// initialize Status conditions resource
+	if instance.Status.Conditions == nil {
+		log.Info("Initializing Notebook CR Status", "namespace", instance.Namespace, "name", instance.Name, "instance.Status", instance.Status)
+		newStatus := initializeStatus()
+		instance.Status = newStatus
+	}
 
 	// Update the readyReplicas if the status is changed
 	if foundStateful.Status.ReadyReplicas != instance.Status.ReadyReplicas {
-		log.Info("Updating Status", "namespace", instance.Namespace, "name", instance.Name)
+		log.Info("Updating Status", "namespace", instance.Namespace, "name", instance.Name, "instance.Status", instance.Status)
 		instance.Status.ReadyReplicas = foundStateful.Status.ReadyReplicas
 		err = r.Status().Update(ctx, instance)
 		if err != nil {
@@ -242,7 +248,7 @@ func (r *NotebookReconciler) Reconcile(ctx context.Context, req ctrl.Request) (c
 					continue
 				}
 
-				log.Info("Updating Notebook CR state: ", "namespace", instance.Namespace, "name", instance.Name)
+				log.Info("Updating Notebook CR state: ", "namespace", instance.Namespace, "name", instance.Name, "instance.Status", instance.Status)
 				cs := pod.Status.ContainerStatuses[i].State
 				instance.Status.ContainerState = cs
 				oldConditions := instance.Status.Conditions
@@ -323,6 +329,20 @@ func (r *NotebookReconciler) Reconcile(ctx context.Context, req ctrl.Request) (c
 		return ctrl.Result{RequeueAfter: culler.GetRequeueTime()}, nil
 	}
 	return ctrl.Result{RequeueAfter: culler.GetRequeueTime()}, nil
+}
+
+func initializeStatus() v1beta1.NotebookStatus {
+	var conditions = make([]v1beta1.NotebookCondition, 0)
+	var rr = int32(0)
+	var containerState = corev1.ContainerState{}
+
+	newStatus := v1beta1.NotebookStatus{
+		Conditions:     conditions,
+		ReadyReplicas:  rr,
+		ContainerState: containerState,
+	}
+
+	return newStatus
 }
 
 func getNextCondition(cs corev1.ContainerState) v1beta1.NotebookCondition {
