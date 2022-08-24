@@ -49,6 +49,12 @@ type NotebookCondition struct {
 	// Last time we probed the condition.
 	// +optional
 	LastProbeTime metav1.Time `json:"lastProbeTime,omitempty"`
+	// Last time the condition transitioned from one status to another.
+	// +optional
+	LastTransitionTime metav1.Time `json:"lastTransitionTime,omitempty"`
+	// Status is the status of the condition. Can be True, False, Unknown.
+	// +optional
+	Status string `json:"status,omitempty"`
 	// (brief) reason the container is in the current state
 	// +optional
 	Reason string `json:"reason,omitempty"`

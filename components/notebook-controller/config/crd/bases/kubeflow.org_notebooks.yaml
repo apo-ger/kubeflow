@@ -3076,9 +3076,14 @@ spec:
                     lastProbeTime:
                       format: date-time
                       type: string
+                    lastTransitionTime:
+                      format: date-time
+                      type: string
                     message:
                       type: string
                     reason:
+                      type: string
+                    status:
                       type: string
                     type:
                       type: string
@@ -6199,9 +6204,14 @@ spec:
                     lastProbeTime:
                       format: date-time
                       type: string
+                    lastTransitionTime:
+                      format: date-time
+                      type: string
                     message:
                       type: string
                     reason:
+                      type: string
+                    status:
                       type: string
                     type:
                       type: string
@@ -9322,9 +9332,14 @@ spec:
                     lastProbeTime:
                       format: date-time
                       type: string
+                    lastTransitionTime:
+                      format: date-time
+                      type: string
                     message:
                       type: string
                     reason:
+                      type: string
+                    status:
                       type: string
                     type:
                       type: string
