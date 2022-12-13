@@ -41,7 +41,7 @@ jobs:
         cd components/crud-web-apps/tensorboards
         make docker-build-multi-arch
 
-      - name: Build and push multi-arch docker image
-        run: |
-          cd components/crud-web-apps/tensorboards
-          make docker-build-push-multi-arch
+    - name: Build and push multi-arch docker image
+      run: |
+        cd components/crud-web-apps/tensorboards
+        make docker-build-push-multi-arch
