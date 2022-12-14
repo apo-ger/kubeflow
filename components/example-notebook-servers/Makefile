@@ -55,7 +55,3 @@ docker-push-all:
 		docker tag $$img:${TAG} ${REGISTRY}/$$img:${TAG} ; \
 		docker push ${REGISTRY}/$$img:${TAG} ; \
 	done
-
-	
-
-	
