@@ -17,6 +17,8 @@ jobs:
     steps:
     - name: test
       run: |
-        pwd
-        export VERSION_TAG=$(cat releasing/version/VERSION)
+        
+        VERSION_TAG=$(cat releasing/version/VERSION)
         echo ${VERSION_TAG}
+
+        cat releasing/version/VERSION
