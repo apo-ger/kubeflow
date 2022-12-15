@@ -9,7 +9,6 @@ env:
   DOCKER_USER: kubeflownotebookswg
   IMG: kubeflownotebookswg/centraldashboard-angular
   TAG: $(git describe --tags --always --dirty)
-  VERSION_TAG: $(cat releasing/version/VERSION)
 
 jobs:
   push_to_registry:
@@ -18,5 +17,6 @@ jobs:
     steps:
     - name: test
       run: |
+        pwd
         export VERSION_TAG=$(cat releasing/version/VERSION)
         echo ${VERSION_TAG}
