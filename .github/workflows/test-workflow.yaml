@@ -1,0 +1,20 @@
+name: Build & Publish CentralDashboard-Angular Docker image
+on:
+  pull_request:
+    branches:
+      - master
+      - v*-branch
+
+env:
+  DOCKER_USER: kubeflownotebookswg
+  IMG: kubeflownotebookswg/centraldashboard-angular
+  TAG: $(git describe --tags --always --dirty)
+  VERSION_TAG: $(cat releasing/version/VERSION)
+
+jobs:
+  push_to_registry:
+    name: TEST
+    runs-on: ubuntu-latest
+    steps:
+    - name: test
+      run: echo ${VESRION_TAG}
