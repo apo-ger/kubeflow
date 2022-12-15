@@ -18,4 +18,5 @@ jobs:
     steps:
     - name: test
       run: |
-        echo ${{env.VERSION_TAG}}
+        export VERSION_TAG=$(cat releasing/version/VERSION)
+        echo ${VERSION_TAG}
