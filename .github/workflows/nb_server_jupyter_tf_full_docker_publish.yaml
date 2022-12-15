@@ -13,6 +13,7 @@ on:
 
 env:
   TAG: $(git describe --tags --always --dirty)
+  VERSION_TAG: $(cat releasing/version/VERSION)
   DOCKER_USER: kubeflownotebookswg
   REGISTRY: kubeflownotebookswg
 
@@ -42,8 +43,8 @@ jobs:
     - name: Build Notebook Server images via their Makefile
       run: |
         cd components/example-notebook-servers/
-        make docker-build-cpu -C jupyter-tensorflow-full
-        make docker-build-cuda -C jupyter-tensorflow-full
+        make docker-build-cpu -C jupyter-tensorflow-full TAG={{env.TAG}}
+        make docker-build-cuda -C jupyter-tensorflow-full TAG={{env.TAG}}
     
     - name: Push Notebook Server images
       run: |
@@ -56,9 +57,7 @@ jobs:
       id: version
       if: steps.filter.outputs.version == 'true'
       run: |
-        docker tag jupyter-tensorflow-full:${{env.TAG}} ${{env.REGISTRY}}/jupyter-tensorflow-full:${VERSION_TAG}
-        docker push ${{env.REGISTRY}}/jupyter-tensorflow-full:${VERSION_TAG}
-        docker tag jupyter-tensorflow-cuda-full:${{env.TAG}} ${{env.REGISTRY}}/jupyter-tensorflow-cuda-full:${VERSION_TAG}
-        docker push ${{env.REGISTRY}}/jupyter-tensorflow-cuda-full:${VERSION_TAG}
-      env:
-        VERSION_TAG: $(cat releasing/version/VERSION)
+        docker tag jupyter-tensorflow-full:${{env.TAG}} ${{env.REGISTRY}}/jupyter-tensorflow-full:${{env.VERSION_TAG}}
+        docker push ${{env.REGISTRY}}/jupyter-tensorflow-full:${{env.VERSION_TAG}}
+        docker tag jupyter-tensorflow-cuda-full:${{env.TAG}} ${{env.REGISTRY}}/jupyter-tensorflow-cuda-full:${{env.VERSION_TAG}}
+        docker push ${{env.REGISTRY}}/jupyter-tensorflow-cuda-full:${{env.VERSION_TAG}}

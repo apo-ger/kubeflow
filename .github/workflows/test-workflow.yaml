@@ -1,0 +1,38 @@
+name: Build & Publish CentralDashboard-Angular Docker image
+on:
+  pull_request:
+    branches:
+      - master
+      - v*-branch
+
+env:
+  DOCKER_USER: kubeflownotebookswg
+  IMG: kubeflownotebookswg/centraldashboard-angular
+  TAG: $(git describe --tags --always --dirty)
+  VERSION_TAG: $(cat releasing/version/VERSION)
+
+jobs:
+  push_to_registry:
+    name: TEST
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+    
+    - name: test
+      run: |
+        echo ${{env.VERSION_TAG}}
+
+    - name: test1
+      run: |
+        export TAG=test
+        cd components/notebook-controller
+        make docker-build
+
+    - name: test2
+      run: |
+        export TAG=$(cat releasing/version/VERSION)
+        cd components/notebook-controller
+        make docker-build
