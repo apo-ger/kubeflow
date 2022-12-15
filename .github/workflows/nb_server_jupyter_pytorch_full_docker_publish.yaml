@@ -1,6 +1,6 @@
-name: Build & Publish Jupyter Pytorch Full Notebook Server Docker images
+name: Build Jupyter Pytorch Full Notebook Server Docker images
 on:
-  push:
+  pull_request:
     branches:
       - master
       - v*-branch
@@ -12,13 +12,13 @@ on:
       - releasing/version/VERSION
 
 env:
-  TAG: latest
+  TAG: top-level-latest
   DOCKER_USER: kubeflownotebookswg
   REGISTRY: kubeflownotebookswg
 
 jobs:
   push_to_registry:
-    name: Build & Push Docker image to Docker Hub
+    name: Build Docker image to Docker Hub
     runs-on: ubuntu-latest
     steps:
     - name: Checkout
@@ -33,12 +33,6 @@ jobs:
           version:
             - 'releasing/version/VERSION'
 
-    - name: Login to DockerHub
-      uses: docker/login-action@v2
-      with:
-        username: ${{ env.DOCKER_USER }}
-        password: ${{ secrets.KUBEFLOWNOTEBOOKSWG_DOCKER_TOKEN }}
-
     - name: Build Notebook Server images via their Makefile
       run: |
         cd components/example-notebook-servers/
@@ -48,16 +42,12 @@ jobs:
     - name: Push Notebook Server images
       run: |
         docker tag jupyter-pytorch-full:${{env.TAG}} ${{env.REGISTRY}}/jupyter-pytorch-full:${{env.TAG}}
-        docker push ${{env.REGISTRY}}/jupyter-pytorch-full:${{env.TAG}}
         docker tag jupyter-pytorch-cuda-full:${{env.TAG}} ${{env.REGISTRY}}/jupyter-pytorch-cuda-full:${{env.TAG}}
-        docker push ${{env.REGISTRY}}/jupyter-pytorch-cuda-full:${{env.TAG}}
 
     - name: Push Notebook Server images on Version change
-      id: version
-      if: steps.filter.outputs.version == 'true'
       run: |
         export VERSION_TAG=$(cat releasing/version/VERSION)
+        echo ${VERSION_TAG}
         docker tag jupyter-pytorch-full:${{env.TAG}} ${{env.REGISTRY}}/jupyter-pytorch-full:${VERSION_TAG}
-        docker push ${{env.REGISTRY}}/jupyter-pytorch-full:${VERSION_TAG}
         docker tag jupyter-pytorch-cuda-full:${{env.TAG}} ${{env.REGISTRY}}/jupyter-pytorch-cuda-full:${VERSION_TAG}
-        docker push ${{env.REGISTRY}}/jupyter-pytorch-cuda-full:${VERSION_TAG}
+

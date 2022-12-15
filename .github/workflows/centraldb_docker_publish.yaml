@@ -1,6 +1,6 @@
-name: Build & Publish CentralDashboard Docker image
+name: Build CentralDashboard Docker image
 on:
-  push:
+  pull_request:
     branches:
       - master
       - v*-branch
@@ -11,11 +11,11 @@ on:
 env:
   DOCKER_USER: kubeflownotebookswg
   IMG: kubeflownotebookswg/centraldashboard
-  TAG: latest
+  TAG: top-level-latest
 
 jobs:
   push_to_registry:
-    name: Build & Push Docker image to Docker Hub
+    name: Build Docker image to Docker Hub
     runs-on: ubuntu-latest
     steps:
     - name: Checkout
@@ -30,28 +30,15 @@ jobs:
           version:
             - 'releasing/version/VERSION'
 
-    - name: Login to DockerHub
-      uses: docker/login-action@v2
-      with:
-        username: ${{ env.DOCKER_USER }}
-        password: ${{ secrets.KUBEFLOWNOTEBOOKSWG_DOCKER_TOKEN }}
-
     - name: Run CentralDashboard build
       run: |
         cd components/centraldashboard
         make docker-build
-
-    - name: Run CentralDashboard push
+    
+    - name: Run CentralDashboard build on version tag
       run: |
+        export TAG=$(cat releasing/version/VERSION)
         cd components/centraldashboard
-        make docker-push
-
-    - name: Run CentralDashboard push on Version change
-      id: version
-      if: steps.filter.outputs.version == 'true'
-      run: |
-        export VERSION_TAG=$(cat releasing/version/VERSION)
-        docker tag ${{env.IMG}}:${TAG} ${{env.IMG}}:${VERSION_TAG}
-        docker push ${{env.IMG}}:${VERSION_TAG}
+        make docker-build
 
       
