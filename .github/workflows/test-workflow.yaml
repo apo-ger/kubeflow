@@ -21,4 +21,4 @@ jobs:
         VERSION_TAG=$(cat releasing/version/VERSION)
         echo ${VERSION_TAG}
 
-        cat releasing/version/VERSION
+        $(cat releasing/version/VERSION)
