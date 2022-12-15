@@ -17,4 +17,4 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: test
-      run: echo ${VESRION_TAG}
+      run: echo ${{env.VESRION_TAG}}
