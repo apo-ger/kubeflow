@@ -11,7 +11,7 @@ on:
       - releasing/version/VERSION
 
 env:
-  TAG: $(git describe --tags --always --dirty)
+  TAG: latest
   DOCKER_USER: kubeflownotebookswg
   REGISTRY: kubeflownotebookswg
 
@@ -41,7 +41,7 @@ jobs:
     - name: Build Notebook Server images via their Makefile
       run: |
         cd components/example-notebook-servers/
-        make docker-build -C codeserver-python
+        make docker-build -C codeserver-python TAG=${{env.TAG}}
     
     - name: Push Notebook Server images
       run: |
@@ -52,7 +52,6 @@ jobs:
       id: version
       if: steps.filter.outputs.version == 'true'
       run: |
+        export VERSION_TAG=$(cat releasing/version/VERSION)
         docker tag codeserver-python:${{env.TAG}} ${{env.REGISTRY}}/codeserver-python:${VERSION_TAG}
         docker push ${{env.REGISTRY}}/codeserver-python:${VERSION_TAG}
-      env:
-        VERSION_TAG: $(cat releasing/version/VERSION)
