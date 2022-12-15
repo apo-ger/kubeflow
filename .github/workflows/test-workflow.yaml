@@ -15,8 +15,12 @@ jobs:
     name: TEST
     runs-on: ubuntu-latest
     steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+    
     - name: test
       run: |
-        cd releasing/version
-        VERSION_TAG=$(cat VERSION)
+        VERSION_TAG=$(cat releasing/version/VERSION)
         echo ${VERSION_TAG}
