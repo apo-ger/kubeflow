@@ -13,6 +13,7 @@ env:
   DOCKER_USER: kubeflownotebookswg
   IMG: kubeflownotebookswg/notebook-controller
   ARCH: linux/ppc64le,linux/amd64
+  TAG: latest
 
 jobs:
   push_to_registry:
@@ -54,7 +55,6 @@ jobs:
       id: version
       if: steps.filter.outputs.version == 'true'
       run: |
+        export TAG=$(cat releasing/version/VERSION)
         cd components/notebook-controller
         make docker-build-push-multi-arch
-      env:
-        TAG: $(cat releasing/version/VERSION)

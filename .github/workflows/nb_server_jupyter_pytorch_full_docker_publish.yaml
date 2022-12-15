@@ -12,7 +12,7 @@ on:
       - releasing/version/VERSION
 
 env:
-  TAG: $(git describe --tags --always --dirty)
+  TAG: latest
   DOCKER_USER: kubeflownotebookswg
   REGISTRY: kubeflownotebookswg
 
@@ -42,8 +42,8 @@ jobs:
     - name: Build Notebook Server images via their Makefile
       run: |
         cd components/example-notebook-servers/
-        make docker-build-cpu -C jupyter-pytorch-full
-        make docker-build-cuda -C jupyter-pytorch-full
+        make docker-build-cpu -C jupyter-pytorch-full TAG=${{env.TAG}}
+        make docker-build-cuda -C jupyter-pytorch-full TAG=${{env.TAG}}
     
     - name: Push Notebook Server images
       run: |
@@ -56,9 +56,8 @@ jobs:
       id: version
       if: steps.filter.outputs.version == 'true'
       run: |
+        export VERSION_TAG=$(cat releasing/version/VERSION)
         docker tag jupyter-pytorch-full:${{env.TAG}} ${{env.REGISTRY}}/jupyter-pytorch-full:${VERSION_TAG}
         docker push ${{env.REGISTRY}}/jupyter-pytorch-full:${VERSION_TAG}
         docker tag jupyter-pytorch-cuda-full:${{env.TAG}} ${{env.REGISTRY}}/jupyter-pytorch-cuda-full:${VERSION_TAG}
         docker push ${{env.REGISTRY}}/jupyter-pytorch-cuda-full:${VERSION_TAG}
-      env:
-        VERSION_TAG: $(cat releasing/version/VERSION)
