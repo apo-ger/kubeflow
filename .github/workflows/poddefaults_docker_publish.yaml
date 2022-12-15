@@ -12,6 +12,7 @@ env:
   DOCKER_USER: kubeflownotebookswg
   IMG: kubeflownotebookswg/poddefaults-webhook
   ARCH: linux/ppc64le,linux/amd64
+  VERSION_TAG: $(cat releasing/version/VERSION)
 
 jobs:
   push_to_registry:
@@ -52,6 +53,4 @@ jobs:
       if: steps.filter.outputs.version == 'true'
       run: |
         cd components/admission-webhook
-        make docker-build-push-multi-arch
-      env:
-        TAG: $(cat releasing/version/VERSION)
+        make docker-build-push-multi-arch TAG=${{env.VERSION_TAG}}

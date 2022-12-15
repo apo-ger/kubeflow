@@ -11,6 +11,8 @@ on:
 env:
   DOCKER_USER: kubeflownotebookswg
   IMG: kubeflownotebookswg/centraldashboard-angular
+  TAG: $(git describe --tags --always --dirty)
+  VERSION_TAG: $(cat releasing/version/VERSION)
 
 jobs:
   push_to_registry:
@@ -49,8 +51,5 @@ jobs:
       id: version
       if: steps.filter.outputs.version == 'true'
       run: |
-        docker tag ${{env.IMG}}:${TAG} ${{env.IMG}}:${VERSION_TAG}
-        docker push ${{env.IMG}}:${VERSION_TAG}
-      env:
-        TAG: $(git describe --tags --always --dirty)
-        VERSION_TAG: $(cat releasing/version/VERSION)
+        docker tag ${{env.IMG}}:${{env.TAG}} ${{env.IMG}}:${{env.VERSION_TAG}}
+        docker push ${{env.IMG}}:${{env.VERSION_TAG}}
