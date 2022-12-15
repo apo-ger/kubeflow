@@ -18,4 +18,4 @@ jobs:
     steps:
     - name: test
       run: |
-        echo ${VERSION_TAG}
+        echo ${{env.VERSION_TAG}}
