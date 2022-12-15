@@ -17,8 +17,6 @@ jobs:
     steps:
     - name: test
       run: |
-        
-        VERSION_TAG=$(cat releasing/version/VERSION)
+        cd releasing/version
+        VERSION_TAG=$(cat VERSION)
         echo ${VERSION_TAG}
-
-        $(cat releasing/version/VERSION)
