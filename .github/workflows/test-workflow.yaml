@@ -24,3 +24,15 @@ jobs:
     - name: test
       run: |
         echo ${{env.VERSION_TAG}}
+
+    - name: test1
+      run: |
+        export TAG=test
+        cd components/notebook-controller
+        make docker-build
+
+    - name: test2
+      run: |
+        export TAG=$(cat releasing/version/VERSION)
+        cd components/notebook-controller
+        make docker-build
