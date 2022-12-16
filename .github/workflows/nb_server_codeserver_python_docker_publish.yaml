@@ -1,6 +1,6 @@
-name: Build & Publish Codeserver Python Notebook Server Docker images
+name: Build Codeserver Python Notebook Server Docker images
 on:
-  push:
+  pull_request:
     branches:
       - master
       - v*-branch
@@ -11,13 +11,13 @@ on:
       - releasing/version/VERSION
 
 env:
-  TAG: $(git describe --tags --always --dirty)
+  TAG: top-level-latest
   DOCKER_USER: kubeflownotebookswg
   REGISTRY: kubeflownotebookswg
 
 jobs:
   push_to_registry:
-    name: Build & Push Docker image to Docker Hub
+    name: Build & TAG Docker image to Docker Hub
     runs-on: ubuntu-latest
     steps:
     - name: Checkout
@@ -32,27 +32,27 @@ jobs:
           version:
             - 'releasing/version/VERSION'
 
-    - name: Login to DockerHub
-      uses: docker/login-action@v2
-      with:
-        username: ${{ env.DOCKER_USER}}
-        password: ${{ secrets.KUBEFLOWNOTEBOOKSWG_DOCKER_TOKEN }}
+    - name: Install KinD
+      run: ./components/testing/gh-actions/install_kind.sh
+
+    - name: Create KinD Cluster
+      run: kind create cluster --config components/testing/gh-actions/kind-1-25.yaml
 
     - name: Build Notebook Server images via their Makefile
       run: |
         cd components/example-notebook-servers/
-        make docker-build -C codeserver-python
+        make docker-build -C codeserver-python TAG=${{env.TAG}}
     
-    - name: Push Notebook Server images
+    - name: TAG Notebook Server images
       run: |
         docker tag codeserver-python:${{env.TAG}} ${{env.REGISTRY}}/codeserver-python:${{env.TAG}}
-        docker push ${{env.REGISTRY}}/codeserver-python:${{env.TAG}}
+        kind load docker-image ${{env.REGISTRY}}/codeserver-python:${{env.TAG}}
 
-    - name: Push Notebook Server images on Version change
-      id: version
-      if: steps.filter.outputs.version == 'true'
+    - name: TAG Notebook Server images on Version change
       run: |
+        export VERSION_TAG=$(cat releasing/version/VERSION)
+        echo ${VERSION_TAG}
         docker tag codeserver-python:${{env.TAG}} ${{env.REGISTRY}}/codeserver-python:${VERSION_TAG}
-        docker push ${{env.REGISTRY}}/codeserver-python:${VERSION_TAG}
-      env:
-        VERSION_TAG: $(cat releasing/version/VERSION)
+        kind load docker-image ${{env.REGISTRY}}/codeserver-python:${VERSION_TAG}
+        docker images
+
