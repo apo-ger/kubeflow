@@ -21,7 +21,7 @@ spec:
     spec:
       containers:
         - name: my-notebook
-          image: kubeflownotebookswg/jupyter:master
+          image: apoger/jupyter:master
           args:
             [
               "start.sh",

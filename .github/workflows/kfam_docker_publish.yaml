@@ -1,6 +1,6 @@
 name: Build & Publish KFAM Docker image
 on:
-  push:
+  pull_request:
     branches:
       - master
       - v*-branch
@@ -9,9 +9,10 @@ on:
       - releasing/version/VERSION
 
 env:
-  DOCKER_USER: kubeflownotebookswg
-  IMG: kubeflownotebookswg/kfam
+  DOCKER_USER: apoger
+  IMG: apoger/kfam
   ARCH: linux/ppc64le,linux/amd64
+  TAG: latest
 
 jobs:
   push_to_registry:
@@ -33,8 +34,8 @@ jobs:
     - name: Login to DockerHub
       uses: docker/login-action@v2
       with:
-        username: ${{ env.DOCKER_USER }}
-        password: ${{ secrets.KUBEFLOWNOTEBOOKSWG_DOCKER_TOKEN }}
+        username: ${{ secrets.DOCKER_HUB_USERNAME }}
+        password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
 
     - name: Setup QEMU
       uses: docker/setup-qemu-action@v2
@@ -51,7 +52,6 @@ jobs:
       id: version
       if: steps.filter.outputs.version == 'true'
       run: |
+        export TAG=$(cat releasing/version/VERSION)
         cd components/access-management
         make docker-build-push-multi-arch
-      env:
-        TAG: $(cat releasing/version/VERSION)
