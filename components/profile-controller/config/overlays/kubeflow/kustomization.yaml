@@ -27,6 +27,6 @@ vars:
     apiVersion: v1
 
 images:
-- name: docker.io/kubeflownotebookswg/kfam
-  newName: docker.io/kubeflownotebookswg/kfam
+- name: docker.io/apoger/kfam
+  newName: docker.io/apoger/kfam
   newTag: latest

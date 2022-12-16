@@ -1,6 +1,6 @@
 name: Build & Publish Jupyter TensorFlow Full Notebook Server Docker images
 on:
-  push:
+  pull_request:
     branches:
       - master
       - v*-branch
@@ -13,8 +13,8 @@ on:
 
 env:
   TAG: latest
-  DOCKER_USER: kubeflownotebookswg
-  REGISTRY: kubeflownotebookswg
+  DOCKER_USER: apoger
+  REGISTRY: apoger
 
 jobs:
   push_to_registry:
@@ -36,8 +36,8 @@ jobs:
     - name: Login to DockerHub
       uses: docker/login-action@v2
       with:
-        username: ${{ env.DOCKER_USER }}
-        password: ${{ secrets.KUBEFLOWNOTEBOOKSWG_DOCKER_TOKEN }}
+        username: ${{ secrets.DOCKER_HUB_USERNAME }}
+        password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
 
     - name: Build Notebook Server images via their Makefile
       run: |

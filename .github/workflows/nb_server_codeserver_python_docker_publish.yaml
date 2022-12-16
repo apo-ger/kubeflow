@@ -1,6 +1,6 @@
 name: Build & Publish Codeserver Python Notebook Server Docker images
 on:
-  push:
+  pull_request:
     branches:
       - master
       - v*-branch
@@ -12,8 +12,8 @@ on:
 
 env:
   TAG: latest
-  DOCKER_USER: kubeflownotebookswg
-  REGISTRY: kubeflownotebookswg
+  DOCKER_USER: apoger
+  REGISTRY: apoger
 
 jobs:
   push_to_registry:
@@ -36,7 +36,7 @@ jobs:
       uses: docker/login-action@v2
       with:
         username: ${{ env.DOCKER_USER}}
-        password: ${{ secrets.KUBEFLOWNOTEBOOKSWG_DOCKER_TOKEN }}
+        password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
 
     - name: Build Notebook Server images via their Makefile
       run: |

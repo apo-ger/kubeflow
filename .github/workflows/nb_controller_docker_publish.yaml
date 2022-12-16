@@ -1,6 +1,6 @@
 name: Build & Publish Notebook Controller Docker image
 on:
-  push:
+  pull_request:
     branches:
       - master
       - v*-branch
@@ -10,8 +10,8 @@ on:
       - releasing/version/VERSION
 
 env:
-  DOCKER_USER: kubeflownotebookswg
-  IMG: kubeflownotebookswg/notebook-controller
+  DOCKER_USER: apoger
+  IMG: apoger/notebook-controller
   ARCH: linux/ppc64le,linux/amd64
   TAG: latest
 
@@ -35,8 +35,8 @@ jobs:
     - name: Login to DockerHub
       uses: docker/login-action@v2
       with:
-        username: ${{ env.DOCKER_USER }}
-        password: ${{ secrets.KUBEFLOWNOTEBOOKSWG_DOCKER_TOKEN }}
+        username: ${{ secrets.DOCKER_HUB_USERNAME }}
+        password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
 
     - name: Setup QEMU
       uses: docker/setup-qemu-action@v2

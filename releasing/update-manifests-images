@@ -53,8 +53,8 @@ apps = [
         "kustomization": "components/admission-webhook/manifests/base/kustomization.yaml",
         "images": [
             {
-                "name": "docker.io/kubeflownotebookswg/poddefaults-webhook",
-                "newName": "docker.io/kubeflownotebookswg/poddefaults-webhook",
+                "name": "docker.io/apoger/poddefaults-webhook",
+                "newName": "docker.io/apoger/poddefaults-webhook",
             },
         ],
     },
@@ -63,8 +63,8 @@ apps = [
         "kustomization": "components/centraldashboard/manifests/base/kustomization.yaml",
         "images": [
             {
-                "name": "docker.io/kubeflownotebookswg/centraldashboard",
-                "newName": "docker.io/kubeflownotebookswg/centraldashboard",
+                "name": "docker.io/apoger/centraldashboard",
+                "newName": "docker.io/apoger/centraldashboard",
             },
         ],
     },
@@ -73,8 +73,8 @@ apps = [
         "kustomization": "components/crud-web-apps/jupyter/manifests/base/kustomization.yaml",
         "images": [
             {
-                "name": "docker.io/kubeflownotebookswg/jupyter-web-app",
-                "newName": "docker.io/kubeflownotebookswg/jupyter-web-app",
+                "name": "docker.io/apoger/jupyter-web-app",
+                "newName": "docker.io/apoger/jupyter-web-app",
 
             },
         ],
@@ -84,8 +84,8 @@ apps = [
         "kustomization": "components/crud-web-apps/tensorboards/manifests/base/kustomization.yaml",
         "images": [
             {
-                "name": "docker.io/kubeflownotebookswg/tensorboards-web-app",
-                "newName": "docker.io/kubeflownotebookswg/tensorboards-web-app",
+                "name": "docker.io/apoger/tensorboards-web-app",
+                "newName": "docker.io/apoger/tensorboards-web-app",
             },
         ],
     },
@@ -94,8 +94,8 @@ apps = [
         "kustomization": "components/crud-web-apps/volumes/manifests/base/kustomization.yaml",
         "images": [
             {
-                "name": "docker.io/kubeflownotebookswg/volumes-web-app",
-                "newName": "docker.io/kubeflownotebookswg/volumes-web-app",
+                "name": "docker.io/apoger/volumes-web-app",
+                "newName": "docker.io/apoger/volumes-web-app",
             },
         ],
     },
@@ -104,8 +104,8 @@ apps = [
         "kustomization": "components/notebook-controller/config/base/kustomization.yaml",
         "images": [
             {
-                "name": "docker.io/kubeflownotebookswg/notebook-controller",
-                "newName": "docker.io/kubeflownotebookswg/notebook-controller",
+                "name": "docker.io/apoger/notebook-controller",
+                "newName": "docker.io/apoger/notebook-controller",
             },
         ],
     },
@@ -114,8 +114,8 @@ apps = [
         "kustomization": "components/tensorboard-controller/config/base/kustomization.yaml",
         "images": [
             {
-                "name": "docker.io/kubeflownotebookswg/tensorboard-controller",
-                "newName": "docker.io/kubeflownotebookswg/tensorboard-controller",
+                "name": "docker.io/apoger/tensorboard-controller",
+                "newName": "docker.io/apoger/tensorboard-controller",
             },
         ],
     },
@@ -124,8 +124,8 @@ apps = [
         "kustomization": "components/profile-controller/config/base/kustomization.yaml",
         "images": [
             {
-                "name": "docker.io/kubeflownotebookswg/profile-controller",
-                "newName": "docker.io/kubeflownotebookswg/profile-controller",
+                "name": "docker.io/apoger/profile-controller",
+                "newName": "docker.io/apoger/profile-controller",
             },
         ],
     },
@@ -134,8 +134,8 @@ apps = [
         "kustomization": "components/profile-controller/config/overlays/kubeflow/kustomization.yaml",
         "images": [
             {
-                "name": "docker.io/kubeflownotebookswg/kfam",
-                "newName": "docker.io/kubeflownotebookswg/kfam",
+                "name": "docker.io/apoger/kfam",
+                "newName": "docker.io/apoger/kfam",
             },
         ],
     },
