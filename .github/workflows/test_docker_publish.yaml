@@ -38,7 +38,6 @@ jobs:
 
     - name: Build and push Notebook Server images via their Makefile
       run: |
-        export TAG=test
         cd components/example-notebook-servers/
         make docker-build -C codeserver-python
         docker tag codeserver-python:${TAG} ${{env.REGISTRY}}/codeserver-python:${TAG}
