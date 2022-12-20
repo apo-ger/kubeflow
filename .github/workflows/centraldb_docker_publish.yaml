@@ -1,17 +1,15 @@
 name: Build & Publish CentralDashboard Docker image
 on:
-  push:
-    branches:
-      - master
-      - v*-branch
-    paths:
-      - components/centraldashboard/**
   pull_request:
     branches:
       - master
       - v*-branch
     paths:
       - components/centraldashboard/**
+      - releasing/version/VERSION
+
+env:
+  IMG: apoger/centraldashboard
 
 jobs:
   push_to_registry:
@@ -20,23 +18,33 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+
+    - uses: dorny/paths-filter@v2
+      id: filter
+      with:
+        filters: |
+          version:
+            - 'releasing/version/VERSION'
 
     - name: Login to DockerHub
-      if: github.event_name == 'push'
       uses: docker/login-action@v2
       with:
-        username: kubeflownotebookswg
-        password: ${{ secrets.KUBEFLOWNOTEBOOKSWG_DOCKER_TOKEN }}
+        username: ${{ secrets.DOCKER_HUB_USERNAME }}
+        password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
 
-    - name: Run CentralDashboard build
+    - name: Run CentralDashboard build/push
       run: |
-        cd components/centraldashboard
-        export IMG=kubeflownotebookswg/centraldashboard
-        make docker-build
+        echo normal-build-run
 
-    - name: Run CentralDashboard push
-      if: github.event_name == 'push'
+    - name: Run CentralDashboard build/push latest
+      if: github.ref == 'refs/heads/master'
       run: |
-        cd components/centraldashboard
-        export IMG=kubeflownotebookswg/centraldashboard
-        make docker-push
+        echo latest-run
+
+    - name: Run CentralDashboard push/push on Version change
+      id: version
+      if: steps.filter.outputs.version == 'true'
+      run: |
+        echo version-run
