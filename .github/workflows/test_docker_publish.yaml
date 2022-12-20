@@ -11,6 +11,7 @@ on:
     - releasing/version/VERSION
 
 env:
+  TAG: test
   REGISTRY: apoger
 
 jobs:
