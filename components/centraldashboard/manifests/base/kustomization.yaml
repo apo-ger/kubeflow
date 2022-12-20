@@ -16,7 +16,7 @@ commonLabels:
   app.kubernetes.io/component: centraldashboard
   app.kubernetes.io/name: centraldashboard
 images:
-- name: docker.io/kubeflownotebookswg/centraldashboard
+- name: docker.io/apoger/centraldashboard
   newTag: v1.6.1
 configMapGenerator:
 - envs:

@@ -1,14 +1,5 @@
 name: Build & Publish RStudio Tidyverse Notebook Server Docker images
 on:
-  push:
-    branches:
-      - master
-      - v*-branch
-    paths:
-      - components/example-notebook-servers/rstudio-tidyverse/**
-      - components/example-notebook-servers/rstudio/**
-      - components/example-notebook-servers/base/**
-      - releasing/version/VERSION
   pull_request:
     branches:
       - master
@@ -17,6 +8,11 @@ on:
       - components/example-notebook-servers/rstudio-tidyverse/**
       - components/example-notebook-servers/rstudio/**
       - components/example-notebook-servers/base/**
+      - releasing/version/VERSION
+
+env:
+  DOCKER_USER: apoger
+  REGISTRY: apoger
 
 jobs:
   push_to_registry:
@@ -25,6 +21,8 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
 
     - uses: dorny/paths-filter@v2
       id: filter
@@ -34,34 +32,34 @@ jobs:
             - 'releasing/version/VERSION'
 
     - name: Login to DockerHub
-      if: github.event_name == 'push'
       uses: docker/login-action@v2
       with:
-        username: kubeflownotebookswg
-        password: ${{ secrets.KUBEFLOWNOTEBOOKSWG_DOCKER_TOKEN }}
+        username: ${{ secrets.DOCKER_HUB_USERNAME }}
+        password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
 
-    - name: Build Notebook Server images via their Makefile
+    - name: Build and push Notebook Server images
       run: |
+        export TAG=$(shell git describe --tags --always --dirty)
         cd components/example-notebook-servers/
-        export TAG=$(git describe --tags --always --dirty)
         make docker-build -C rstudio-tidyverse TAG=${TAG}
+        docker tag rstudio-tidyverse:${TAG} ${{env.REGISTRY}}/rstudio-tidyverse:${TAG}
+        docker push ${{env.REGISTRY}}/rstudio-tidyverse:${TAG}
 
-    - name: Push Notebook Server images via their Makefile
-      if: github.event_name == 'push'
-      run: |
+    - name: Build and push latest Notebook Server images
+      if: github.ref == 'refs/heads/master'
+      run: | 
+        export TAG=latest
         cd components/example-notebook-servers/
-        export TAG=$(git describe --tags --always --dirty)
-        export REGISTRY=kubeflownotebookswg
-        docker tag rstudio-tidyverse:${TAG} ${REGISTRY}/rstudio-tidyverse:${TAG}
-        docker push ${REGISTRY}/rstudio-tidyverse:${TAG}
+        make docker-build -C rstudio-tidyverse TAG=${TAG}
+        docker tag rstudio-tidyverse:${TAG} ${{env.REGISTRY}}/rstudio-tidyverse:${TAG}
+        docker push ${{env.REGISTRY}}/rstudio-tidyverse:${TAG}
 
-    - name: Push Notebook Server images via their Makefile on Version change
+    - name: Build and push Notebook Server images on Version change
       id: version
-      if: github.event_name == 'push' && steps.filter.outputs.version == 'true'
+      if: steps.filter.outputs.version == 'true'
       run: |
         export TAG=$(cat releasing/version/VERSION)
         cd components/example-notebook-servers/
         make docker-build -C rstudio-tidyverse TAG=${TAG}
-        export REGISTRY=kubeflownotebookswg
-        docker tag rstudio-tidyverse:${TAG} ${REGISTRY}/rstudio-tidyverse:${TAG}
-        docker push ${REGISTRY}/rstudio-tidyverse:${TAG}
+        docker tag rstudio-tidyverse:${TAG} ${{env.REGISTRY}}/rstudio-tidyverse:${TAG}
+        docker push ${{env.REGISTRY}}/rstudio-tidyverse:${TAG}

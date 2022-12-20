@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
       - name: manager
-        image: docker.io/kubeflownotebookswg/notebook-controller
+        image: docker.io/apoger/notebook-controller
         command:
           - /manager
         env:
