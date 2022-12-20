@@ -50,12 +50,49 @@ docker-build-all:
 	@echo "\nAll notebook-server images have been successfully built...\n"
 
 docker-push-all:
-	for img in base codeserver codeserver-python jupyter jupyter-scipy jupyter-pytorch-full jupyter-pytorch-cuda-full jupyter-tensorflow-full \
-	jupyter-tensorflow-cuda-full rstudio rstudio-tidyverse ; do \
-		docker tag $$img:${TAG} ${REGISTRY}/$$img:${TAG} ; \
-		docker push ${REGISTRY}/$$img:${TAG} ; \
-	done
+	@echo "\nPushing base image...\n"
+	make docker-push -C base TAG=${TAG}
 
-	
+	@echo "\nPushing codeserver image...\n"
+	make docker-push -C codeserver TAG=${TAG} 
 
-	
+	@echo "\nPushing codeserver-python image...\n"
+	make docker-push -C codeserver-python TAG=${TAG} 
+
+	@echo "\nPushing rstudio image...\n"
+	make docker-push -C rstudio TAG=${TAG} 
+
+	@echo "\nPushing rstudio-tidyverse image...\n"
+	make docker-push -C rstudio-tidyverse TAG=${TAG} 
+
+	@echo "\nPushing jupyter image...\n"
+	make docker-push -C jupyter TAG=${TAG} 
+
+	@echo "\nPushing jupyter-scipy image...\n"
+	make docker-push -C jupyter-scipy TAG=${TAG} 
+
+	@echo "\nPushing jupyter-pytorch image...\n"
+	make docker-push-cpu -C jupyter-pytorch TAG=${TAG} 
+
+	@echo "\nPushing jupyter-pytorch-cuda image...\n"
+	make docker-push-cuda -C jupyter-pytorch TAG=${TAG} 
+
+	@echo "\nPushing jupyter-pytorch-full image...\n"
+	make docker-push-cpu -C jupyter-pytorch-full TAG=${TAG}
+
+	@echo "\nPushing jupyter-pytorch-cuda-full image...\n"
+	make docker-push-cuda -C jupyter-pytorch-full TAG=${TAG} 
+
+	@echo "\nPushing jupyter-tensorflow image...\n"
+	make docker-push-cpu -C jupyter-tensorflow TAG=${TAG} 
+
+	@echo "\nPushing jupyter-tensorflow-cuda image...\n"
+	make docker-push-cuda -C jupyter-tensorflow TAG=${TAG} 
+
+	@echo "\nPushing jupyter-tensorflow-full image...\n"
+	make docker-push-cpu -C jupyter-tensorflow-full TAG=${TAG} 
+
+	@echo "\nPushing jupyter-tensorflow-cuda-full image...\n"
+	make docker-push-cuda -C jupyter-tensorflow-full TAG=${TAG} 
+
+	@echo "\nAll notebook-server images have been successfully pushed...\n"
