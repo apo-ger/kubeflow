@@ -2,7 +2,7 @@ export const notebook = {
   name: 'test-notebook',
   namespace: 'default',
   image:
-    'kubeflownotebookswg/jupyter-scipy:master-1831e436',
+    'apoger/jupyter-scipy:master-1831e436',
   allowCustomImage: true,
   imagePullPolicy: 'IfNotPresent',
   customImage: '',

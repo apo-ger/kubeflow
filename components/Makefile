@@ -1,4 +1,4 @@
-REGISTRY ?= kubeflownotebookswg
+REGISTRY ?= apoger
 TAG ?= $(shell git describe --tags --always --dirty)
 
 build-all:

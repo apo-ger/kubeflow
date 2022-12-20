@@ -1,6 +1,6 @@
 name: Build & Publish Jupyter TensorFlow Full Notebook Server Docker images
 on:
-  push:
+  pull_request:
     branches:
       - master
       - v*-branch
@@ -12,8 +12,8 @@ on:
       - releasing/version/VERSION
 
 env:
-  DOCKER_USER: kubeflownotebookswg
-  REGISTRY: kubeflownotebookswg
+  DOCKER_USER: apoger
+  REGISTRY: apoger
 
 jobs:
   push_to_registry:
@@ -35,8 +35,8 @@ jobs:
     - name: Login to DockerHub
       uses: docker/login-action@v2
       with:
-        username: ${{ env.DOCKER_USER }}
-        password: ${{ secrets.KUBEFLOWNOTEBOOKSWG_DOCKER_TOKEN }}
+        username: ${{ secrets.DOCKER_HUB_USERNAME }}
+        password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
 
     - name: Build and push Notebook Server images
       run: |
@@ -47,7 +47,6 @@ jobs:
         make docker-push-cuda -C jupyter-tensorflow-full
 
     - name: Build and push latest Notebook Server images
-      if: github.ref == 'refs/heads/master'
       run: |
         export TAG=latest
         cd components/example-notebook-servers/
