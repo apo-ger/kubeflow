@@ -11,7 +11,6 @@ on:
       - releasing/version/VERSION
 
 env:
-  TAG: latest
   DOCKER_USER: kubeflownotebookswg
   REGISTRY: kubeflownotebookswg
 
@@ -38,20 +37,29 @@ jobs:
         username: ${{ env.DOCKER_USER}}
         password: ${{ secrets.KUBEFLOWNOTEBOOKSWG_DOCKER_TOKEN }}
 
-    - name: Build Notebook Server images via their Makefile
+    - name: Build and push Notebook Server images
       run: |
+        export TAG=$(shell git describe --tags --always --dirty)
         cd components/example-notebook-servers/
-        make docker-build -C codeserver-python TAG=${{env.TAG}}
-    
-    - name: Push Notebook Server images
-      run: |
-        docker tag codeserver-python:${{env.TAG}} ${{env.REGISTRY}}/codeserver-python:${{env.TAG}}
-        docker push ${{env.REGISTRY}}/codeserver-python:${{env.TAG}}
+        make docker-build -C codeserver-python TAG=${TAG}
+        docker tag codeserver-python:${TAG} ${{env.REGISTRY}}/codeserver-python:${TAG}
+        docker push ${{env.REGISTRY}}/codeserver-python:${TAG}
 
-    - name: Push Notebook Server images on Version change
+    - name: Build and push latest Notebook Server images
+      if: github.ref == 'refs/heads/master'
+      run: |  
+        export TAG=latest
+        cd components/example-notebook-servers/
+        make docker-build -C codeserver-python TAG=${TAG}
+        docker tag codeserver-python:${TAG} ${{env.REGISTRY}}/codeserver-python:${TAG}
+        docker push ${{env.REGISTRY}}/codeserver-python:${TAG}
+
+    - name: Build and push Notebook Server images on Version change
       id: version
       if: steps.filter.outputs.version == 'true'
       run: |
-        export VERSION_TAG=$(cat releasing/version/VERSION)
-        docker tag codeserver-python:${{env.TAG}} ${{env.REGISTRY}}/codeserver-python:${VERSION_TAG}
-        docker push ${{env.REGISTRY}}/codeserver-python:${VERSION_TAG}
+        export TAG=$(cat releasing/version/VERSION)
+        cd components/example-notebook-servers/
+        make docker-build -C codeserver-python TAG=${TAG}
+        docker tag codeserver-python:${TAG} ${{env.REGISTRY}}/codeserver-python:${TAG}
+        docker push ${{env.REGISTRY}}/codeserver-python:${TAG}

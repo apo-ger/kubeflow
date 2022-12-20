@@ -13,7 +13,6 @@ env:
   DOCKER_USER: kubeflownotebookswg
   IMG: kubeflownotebookswg/tensorboards-web-app
   ARCH: linux/ppc64le,linux/amd64
-  TAG: latest
 
 jobs:
   push_to_registry:
@@ -46,6 +45,13 @@ jobs:
 
     - name: Build and push multi-arch docker image
       run: |
+        cd components/crud-web-apps/tensorboards
+        make docker-build-push-multi-arch
+
+    - name: Build and push latest multi-arch docker image
+      if: github.ref == 'refs/heads/master'
+      run: |
+        export TAG=latest
         cd components/crud-web-apps/tensorboards
         make docker-build-push-multi-arch
 
