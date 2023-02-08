@@ -41,7 +41,6 @@ jobs:
       uses: docker/setup-buildx-action@v2
 
     - name: Build and push latest multi-arch docker image
-      if: github.ref == 'refs/heads/master'
       run: |
         export TAG=latest
         cd components/centraldashboard

@@ -35,7 +35,6 @@ jobs:
         password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
 
     - name: Run CentralDashboard-Angular build/push latest
-      if: github.ref == 'refs/heads/master'
       run: |
         export TAG=latest
         cd components/centraldashboard-angular
